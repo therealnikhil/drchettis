@@ -15,11 +15,13 @@ export const getMeUser = async (args?: {
   const cookieStore = await cookies()
   const token = cookieStore.get('payload-token')?.value
 
+  console.log('token', token)
   const meUserReq = await fetch(`${getClientSideURL()}/api/users/me`, {
     headers: {
       Authorization: `JWT ${token}`,
     },
   })
+  console.log('meUserReq', meUserReq)
 
   const {
     user,
@@ -28,14 +30,17 @@ export const getMeUser = async (args?: {
   } = await meUserReq.json()
 
   if (validUserRedirect && meUserReq.ok && user) {
+    console.log('validUserRedirect', validUserRedirect)
     redirect(validUserRedirect)
   }
 
   if (nullUserRedirect && (!meUserReq.ok || !user)) {
+    console.log('nullUserRedirect', nullUserRedirect)
     redirect(nullUserRedirect)
   }
 
   // Token will exist here because if it doesn't the user will be redirected
+  console.log('user', user)
   return {
     token: token!,
     user,
